@@ -4,6 +4,7 @@ import Image from "next/image";
 const Index = () => {
   return (
     <div>
+    
       <div>
         <Image src="/ecommerce12.jpg" alt="Error" width={1550} height={0} />
       </div>
