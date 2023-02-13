@@ -8,21 +8,21 @@ const Tshirt = ({ products }) => {
       <section className="text-gray-600 body-font">
         <div className="container px-5 py-24 mx-auto">
           <div className="flex flex-wrap -m-4 justify-center">
-            {products.map((item) => {
+            {Object.keys(products).map((item) => {
               return (
                 <div
-                  key={item._id}
+                  key={products[item]._id}
                   className="lg:w-1/5 md:w-1/2 p-4 w-full shadow-lg m-4"
                 >
                   <Link
                     passHref={true}
-                    href={`/product/${item.slug}`}
+                    href={`/product/${products[item].slug}`}
                     className="block relative rounded overflow-hidden"
                   >
                     <img
                       alt="ecommerce"
                       className="m-auto h-[25vh] md:h-[30vh] block"
-                      src={item.img}
+                      src={products[item].img}
                     />
                   </Link>
                   <div className="mt-4 text-center">
@@ -30,10 +30,16 @@ const Tshirt = ({ products }) => {
                       T-Shirts
                     </h3>
                     <h2 className="text-gray-900 title-font text-lg font-medium">
-                      {item.title}
+                      {products[item].title}
                     </h2>
-                    <p className="mt-1">₹{item.price}</p>
-                    <p className="mt-1">{item.size}L</p>
+                    <p className="mt-1">₹{products[item].price}</p>
+                    <div className="mt-1">
+                      {products[item].size.includes("s") && <span> S,</span>}
+                      {products[item].size.includes("s") && <span> M,</span>}
+                      {products[item].size.includes("s") && <span> L,</span>}
+                      {products[item].size.includes("s") && <span> XL,</span>}
+                      {products[item].size.includes("s") && <span> XXL,</span>}
+                    </div>
                   </div>
                 </div>
               );
@@ -51,9 +57,32 @@ export async function getServerSideProps(context) {
   }
 
   let products = await Product.find({ category: "tshirt" });
+  let tshirts = {};
+  for (let item of products) {
+    if (item.title in tshirts) {
+      if (
+        !tshirts[item.title].color.includes(item.color) &&
+        item.availableQty > 0
+      ) {
+        tshirts[item.title].color.push(item.color);
+      }
+      if (
+        !tshirts[item.title].size.includes(item.size) &&
+        item.availableQty > 0
+      ) {
+        tshirts[item.title].size.push(item.size);
+      }
+    } else {
+      tshirts[item.title] = JSON.parse(JSON.stringify(item));
+      if (item.availableQty > 0) {
+        tshirts[item.title].color = [item.color];
+        tshirts[item.title].size = [item.size];
+      }
+    }
+  }
 
   return {
-    props: { products: JSON.parse(JSON.stringify(products)) },
+    props: { products: JSON.parse(JSON.stringify(tshirts)) },
   };
 }
 
