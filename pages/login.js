@@ -32,9 +32,10 @@ const Login = () => {
     setEmail("");
     setPassword("");
     if (response.success) {
+      localStorage.setItem("token", response.token);
       toast.success("You are succesfully login", {
         position: "top-left",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -48,7 +49,7 @@ const Login = () => {
     } else {
       toast.error(response.error, {
         position: "top-left",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -173,7 +174,7 @@ const Login = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    ariaHidden="true"
+                    aria-hidden="true"
                   >
                     <path
                       fillRule="evenodd"
