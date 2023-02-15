@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Product from "../../models/Product";
 import mongoose from "mongoose";
-  import { ToastContainer, toast } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
-const Post = ({buyNow, addToCart, product, variants }) => {
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const Post = ({ buyNow, addToCart, product, variants }) => {
   const router = useRouter();
   const { slug } = router.query;
   const [pin, setPin] = useState();
@@ -50,8 +50,6 @@ const Post = ({buyNow, addToCart, product, variants }) => {
     let url = `http://localhost:3000/product/${variants[newColor][newSize]["slug"]}`;
     window.Location = url;
   };
-   
-
 
   return (
     <>
@@ -264,11 +262,18 @@ const Post = ({buyNow, addToCart, product, variants }) => {
               </div>
               <div className="flex">
                 <span className="title-font font-medium text-xl text-blue-500">
-                  ₹58.00
+                  ₹{product.price}
                 </span>
                 <button
                   onClick={() => {
-                    addToCart(slug, 1, 499, product.title, size, color);
+                    addToCart(
+                      slug,
+                      1,
+                      product.price,
+                      product.title,
+                      size,
+                      color
+                    );
                   }}
                   className="flex ml-8 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
                 >
@@ -276,7 +281,7 @@ const Post = ({buyNow, addToCart, product, variants }) => {
                 </button>
                 <button
                   onClick={() => {
-                    buyNow(slug, 1, 499, product.title, size, color);
+                    buyNow(slug, 1, product.price, product.title, size, color);
                   }}
                   className="flex ml-3 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
                 >
@@ -333,7 +338,10 @@ export async function getServerSideProps(context) {
   }
 
   let product = await Product.findOne({ slug: context.query.slug });
-  let variants = await Product.find({ title: product.title });
+  let variants = await Product.find({
+    title: product.title,
+    category: product.category,
+  });
   let colorSizeSlug = {};
   for (let item of variants) {
     if (Object.keys(colorSizeSlug).includes(item.color)) {
