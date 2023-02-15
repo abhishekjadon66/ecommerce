@@ -10,7 +10,14 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { BsBagCheck } from "react-icons/bs";
 import { RiAccountCircleLine } from "react-icons/ri";
 import Image from "next/image";
-const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
+const Navbar = ({
+  user,
+  cart,
+  addToCart,
+  removeFromCart,
+  clearCart,
+  subTotal,
+}) => {
   const toggleCart = () => {
     if (ref.current.classList.contains("translate-x-full")) {
       ref.current.classList.remove("translate-x-full");
@@ -23,7 +30,7 @@ const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
   const ref = useRef();
   return (
     <div className="flex flex-col md:flex-row md:justify-start justify-center items-center my-2 py-2 shadow-md sticky top-0 bg-white z-10">
-      <div className="logo mx-5 cursor-pointer">
+      <div className="logo mr-auto md:mx-5 cursor-pointer">
         <Link href={"/"}>
           <Image
             src="/logo.png"
@@ -49,10 +56,17 @@ const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
           </Link>
         </ul>
       </div>
-      <div className="cart absolute right-0 top-4 mx-5 cursor-pointer flex">
-        <Link href={"/login"}>
+      <div className="cart items-center absolute right-0 top-3 mx-5 cursor-pointer flex">
+        {user.value && (
           <RiAccountCircleLine className="text-xl md:text-2xl mx-2" />
-        </Link>
+        )}
+        {!user.value && (
+          <Link href={"/login"}>
+            <button className="bg-blue-600 px-2 py-1 rounded-md text-sm text-white mx-2">
+              Login
+            </button>
+          </Link>
+        )}
         <AiOutlineShoppingCart
           onClick={toggleCart}
           className="text-xl md:text-2xl"

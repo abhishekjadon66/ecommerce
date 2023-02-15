@@ -7,7 +7,9 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }) {
   const [cart, setCart] = useState({});
   const [subTotal, setSubTotal] = useState(0);
-  const router = useRouter()
+  const [user, setUser] = useState({ value: null });
+  const [key, setKey] = useState(0);
+  const router = useRouter();
   useEffect(() => {
     try {
       if (localStorage.getItem("cart")) {
@@ -18,7 +20,12 @@ function MyApp({ Component, pageProps }) {
       console.error(error);
       localStorage.clear();
     }
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token) {
+      setUser({ value: token });
+      setKey(Math.random());
+    }
+  }, [router.query]);
 
   const saveCart = (myCart) => {
     localStorage.setItem("cart", JSON.stringify(myCart));
@@ -42,17 +49,15 @@ function MyApp({ Component, pageProps }) {
   };
 
   const buyNow = (itemCode, qty, price, name, size, variant) => {
-    let newCart = { itemCode: { qty: 1, price, name, size, variant } }
-   setCart(newCart);
+    let newCart = { itemCode: { qty: 1, price, name, size, variant } };
+    setCart(newCart);
     saveCart(newCart);
     router.push("/checkout");
-  
-     
-    };
+  };
 
   const clearCart = () => {
     setCart({});
-    saveCart({})
+    saveCart({});
   };
 
   const removeFromCart = (itemCode, qty, price, name, size, variant) => {
@@ -69,13 +74,16 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Navbar
+        user={user}
+        key={key}
         cart={cart}
         addToCart={addToCart}
         removeFromCart={removeFromCart}
         clearCart={clearCart}
         subTotal={subTotal}
       />
-      <Component buyNow={buyNow}
+      <Component
+        buyNow={buyNow}
         cart={cart}
         addToCart={addToCart}
         removeFromCart={removeFromCart}
