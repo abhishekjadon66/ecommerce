@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import {
   AiOutlineShoppingCart,
@@ -11,6 +11,7 @@ import { BsBagCheck } from "react-icons/bs";
 import { RiAccountCircleLine } from "react-icons/ri";
 import Image from "next/image";
 const Navbar = ({
+  Logout,
   user,
   cart,
   addToCart,
@@ -18,6 +19,7 @@ const Navbar = ({
   clearCart,
   subTotal,
 }) => {
+  const [dropdown, setDropdown] = useState(false);
   const toggleCart = () => {
     if (ref.current.classList.contains("translate-x-full")) {
       ref.current.classList.remove("translate-x-full");
@@ -28,6 +30,10 @@ const Navbar = ({
     }
   };
   const ref = useRef();
+
+  // const toggleDropdown = () => {
+  //   setDropdown(!dropdown);
+  // };
   return (
     <div className="flex flex-col md:flex-row md:justify-start justify-center items-center my-2 py-2 shadow-md sticky top-0 bg-white z-10">
       <div className="logo mr-auto md:mx-5 cursor-pointer">
@@ -57,9 +63,44 @@ const Navbar = ({
         </ul>
       </div>
       <div className="cart items-center absolute right-0 top-3 mx-5 cursor-pointer flex">
-        {user.value && (
-          <RiAccountCircleLine className="text-xl md:text-2xl mx-2" />
-        )}
+        <a
+          onMouseOver={() => {
+            setDropdown(true);
+          }}
+          onMouseLeave={() => {
+            setDropdown(false);
+          }}
+        >
+          {dropdown && (
+            <div
+              onMouseOver={() => {
+                setDropdown(true);
+              }}
+              onMouseLeave={() => {
+                setDropdown(false);
+              }}
+              s
+              className="absolute right-10 top-6 py-3 rounded-md px-5 w-32 bg-blue-100 text-sm"
+            >
+              <ul>
+                <Link href={"/myaccount"}>
+                  <li className="py-1 hover:text-blue-500">MY Account</li>
+                </Link>
+                <Link href={"/order"}>
+                  <li className="py-1 hover:text-blue-500">Orders</li>
+                </Link>
+
+                <li onClick={Logout} className="py-1 hover:text-blue-500">
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {user.value && (
+            <RiAccountCircleLine className="text-xl md:text-2xl mx-2" />
+          )}
+        </a>
         {!user.value && (
           <Link href={"/login"}>
             <button className="bg-blue-600 px-2 py-1 rounded-md text-sm text-white mx-2">
