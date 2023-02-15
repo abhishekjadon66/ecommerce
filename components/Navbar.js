@@ -41,7 +41,7 @@ const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
           <Link href={"/hoodies"}>
             <li>Hoodies</li>
           </Link>
-          <Link href={"stickers/"}>
+          <Link href={"/stickers"}>
             <li>Stickers</li>
           </Link>
           <Link href={"/mugs"}>
@@ -61,7 +61,7 @@ const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
 
       <div
         ref={ref}
-        className={`w-72 h-[100vh] sidecart absolute top-0 right-0 bg-blue-100 px-8 py-10 transform transition-transform ${
+        className={`w-72 h-[100vh] sidecart absolute top-0 right-0 bg-blue-100 px-8 py-10 transform transition-transform overflow-y-scroll  ${
           Object.keys(cart).length != 0 ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -80,7 +80,9 @@ const Navbar = ({ cart, addToCart, removeFromCart, clearCart, subTotal }) => {
             return (
               <li key={k}>
                 <div className="item flex my-5">
-                  <div className="w-2/3 ">{cart[k].name}</div>
+                  <div className="w-2/3 ">
+                    {cart[k].name}({cart[k].size}/{cart[k].variant})
+                  </div>
                   <div className="w-1/3 flex font-normal items-center justify-center text-sm ">
                     <AiOutlineMinusCircle
                       onClick={() => {

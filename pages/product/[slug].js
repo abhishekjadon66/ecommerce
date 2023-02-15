@@ -1,41 +1,89 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-
-const Post = ({ addToCart }) => {
+import Product from "../../models/Product";
+import mongoose from "mongoose";
+  import { ToastContainer, toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
+const Post = ({buyNow, addToCart, product, variants }) => {
   const router = useRouter();
   const { slug } = router.query;
   const [pin, setPin] = useState();
   const [service, setService] = useState();
+
   const checkService = async () => {
     let pins = await fetch("http://localhost:3000/api/pincode");
     let pinjson = await pins.json();
     if (pinjson.includes(parseInt(pin))) {
+      toast.success("Your pincode is serviceable", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       setService(true);
     } else {
+      toast.error("Sorry!Pincode not serviceable", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       setService(false);
     }
   };
   const onChangePin = (e) => {
     setPin(e.target.value);
   };
+
+  const [color, setColor] = useState(product.color);
+  const [size, setSize] = useState(product.size);
+
+  const refreshvariant = (newSize, newColor) => {
+    let url = `http://localhost:3000/product/${variants[newColor][newSize]["slug"]}`;
+    window.Location = url;
+  };
+   
+
+
   return (
     <>
-      <section className="text-gray-400 bg-white body-font overflow-hidden">
+      <section className="text-gray-400 bg-Brown body-font overflow-hidden">
+        <ToastContainer
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="container px-5 py-24 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <img
               alt="ecommerce"
               className="lg:w-1/2 w-full lg:h-auto px-14 object-cover object-center rounded"
-              src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T2/images/I/61ROWoM-MPL._AC_UL480_FMwebp_QL65_.jpg"
+              src={product.img}
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 className="text-sm title-font text-black tracking-widest">
                 Tshirt
               </h2>
-              <h1 className="text-white text-3xl title-font font-medium mb-1">
-                The Catcher in the Rye
+              <h1 className="text-Brown text-3xl title-font font-medium mb-1">
+                {product.title} ({product.size}/{product.color})
               </h1>
-              <div className="flex mb-4">
+
+              {/* <div className="flex mb-4">
                 <span className="flex items-center">
                   <svg
                     fill="currentColor"
@@ -132,30 +180,71 @@ const Post = ({ addToCart }) => {
                     </svg>
                   </a>
                 </span>
-              </div>
-              <p className="leading-relaxed">
-                Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-                sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-                juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-                seitan poutine tumeric. Gastropub blue bottle austin listicle
-                pour-over, neutra jean shorts keytar banjo tattooed umami
-                cardigan.
-              </p>
+              </div> */}
+
+              <p className="leading-relaxed">{product.desc}</p>
               <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-800 mb-5">
                 <div className="flex">
                   <span className="mr-3">Color</span>
-                  <button className="border-2 border-gray-800 rounded-full w-6 h-6 focus:outline-none"></button>
-                  <button className="border-2 border-gray-800 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"></button>
-                  <button className="border-2 border-gray-800 ml-1 bg-blue-500 rounded-full w-6 h-6 focus:outline-none"></button>
+                  {Object.keys(variants).includes("red") &&
+                    Object.keys(variants["red"]).includes(size) && (
+                      <button
+                        onClick={() => {
+                          refreshvariant(size, "red");
+                        }}
+                        className={`border-2 rounded-full w-6 h-6 focus:outline-none ${
+                          color === "red" ? "border-red" : "border-red-300"
+                        }`}
+                      ></button>
+                    )}
+                  {Object.keys(variants).includes("Brown") &&
+                    Object.keys(variants["Brown"]).includes(size) && (
+                      <button
+                        onClick={() => {
+                          refreshvariant(size, "Brown");
+                        }}
+                        className={`border-2 border-gray-800  rounded-full w-6 h-6 focus:outline-none ${
+                          color === "Brown" ? "border-black" : "border-gray-300"
+                        }`}
+                      ></button>
+                    )}
+                  {Object.keys(variants).includes("Brown") &&
+                    Object.keys(variants["Brown"]).includes(size) && (
+                      <button
+                        onClick={() => {
+                          refreshvariant(size, "Brown");
+                        }}
+                        className={`border-2 border-gray-800  rounded-full w-6 h-6 focus:outline-none ${
+                          color === "Brown" ? "border-black" : "border-gray-300"
+                        }`}
+                      ></button>
+                    )}
                 </div>
                 <div className="flex ml-6 items-center">
                   <span className="mr-3">Size</span>
                   <div className="relative">
-                    <select className="rounded border border-gray-700 focus:ring-2 focus:ring-blue-900 bg-transparent appearance-none py-2 focus:outline-none focus:border-blue-500 text-blue-500 pl-3 pr-10">
-                      <option>SM</option>
-                      <option>M</option>
-                      <option>L</option>
-                      <option>XL</option>
+                    <select
+                      value={size}
+                      onChange={(e) => {
+                        refreshvariant(e.target.value, color);
+                      }}
+                      className="rounded border border-gray-700 focus:ring-2 focus:ring-blue-900 bg-transparent appearance-none py-2 focus:outline-none focus:border-blue-500 text-blue-500 pl-3 pr-10"
+                    >
+                      {Object.keys(variants[color]).includes("S") && (
+                        <option value={"S"}>S</option>
+                      )}
+                      {Object.keys(variants[color]).includes("M") && (
+                        <option value={"M"}>M</option>
+                      )}
+                      {Object.keys(variants[color]).includes("L") && (
+                        <option value={"L"}>L</option>
+                      )}
+                      {Object.keys(variants[color]).includes("XL") && (
+                        <option value={"XL"}>XL</option>
+                      )}
+                      {Object.keys(variants[color]).includes("XXL") && (
+                        <option value={"XXL"}>XXL</option>
+                      )}
                     </select>
                     <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
                       <svg
@@ -179,16 +268,21 @@ const Post = ({ addToCart }) => {
                 </span>
                 <button
                   onClick={() => {
-                    addToCart(slug, 1, 499, "Tshirts(xl, Rad)", "XL", "Red");
+                    addToCart(slug, 1, 499, product.title, size, color);
                   }}
-                  className="flex ml-8 text-white bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
+                  className="flex ml-8 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
                 >
                   Add to Cart
                 </button>
-                <button className="flex ml-3 text-white bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded">
+                <button
+                  onClick={() => {
+                    buyNow(slug, 1, 499, product.title, size, color);
+                  }}
+                  className="flex ml-3 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
+                >
                   Buy Now
                 </button>
-                <button className="rounded-full w-10 h-10 bg-blue-500 p-0 border-0 inline-flex items-center justify-center text-white ml-4">
+                {/* <button className="rounded-full w-10 h-10 bg-blue-500 p-0 border-0 inline-flex items-center justify-center text-Brown ml-4">
                   <svg
                     fill="currentColor"
                     strokeLinecap="round"
@@ -199,7 +293,7 @@ const Post = ({ addToCart }) => {
                   >
                     <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
                   </svg>
-                </button>
+                </button> */}
               </div>
               <div className="pin mt-6 flex space-x-2 text-sm">
                 <input
@@ -210,7 +304,7 @@ const Post = ({ addToCart }) => {
                 />
                 <button
                   onClick={checkService}
-                  className="flex ml-14 text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded"
+                  className="flex ml-14 text-Brown bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded"
                 >
                   Check
                 </button>
@@ -233,4 +327,28 @@ const Post = ({ addToCart }) => {
   );
 };
 
+export async function getServerSideProps(context) {
+  if (!mongoose.connections[0].readyState) {
+    await mongoose.connect(process.env.MONGO_URI);
+  }
+
+  let product = await Product.findOne({ slug: context.query.slug });
+  let variants = await Product.find({ title: product.title });
+  let colorSizeSlug = {};
+  for (let item of variants) {
+    if (Object.keys(colorSizeSlug).includes(item.color)) {
+      colorSizeSlug[item.color][item.size] = { slug: item.slug };
+    } else {
+      colorSizeSlug[item.color] = {};
+      colorSizeSlug[item.color][item.size] = { slug: item.slug };
+    }
+  }
+
+  return {
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+      variants: JSON.parse(JSON.stringify(colorSizeSlug)),
+    },
+  };
+}
 export default Post;

@@ -34,11 +34,37 @@ const Tshirt = ({ products }) => {
                     </h2>
                     <p className="mt-1">₹{products[item].price}</p>
                     <div className="mt-1">
-                      {products[item].size.includes("s") && <span> S,</span>}
-                      {products[item].size.includes("s") && <span> M,</span>}
-                      {products[item].size.includes("s") && <span> L,</span>}
-                      {products[item].size.includes("s") && <span> XL,</span>}
-                      {products[item].size.includes("s") && <span> XXL,</span>}
+                      {products[item].size.includes("s") && 
+                        <span className="border px-1 mx-1 border-blue-200">
+                          S,
+                        </span>
+            }|
+                      {products[item].size.includes("m") && 
+                        <span className="border px-1 mx-1 border-blue-200">
+                          M,
+                        </span>
+                      }
+                      {products[item].size.includes("L") && 
+                        <span className="border px-1 mx-1 border-blue-200">
+                          L,
+                        </span>
+                      }
+                      {products[item].size.includes("XL") && 
+                        <span className="border px-1 mx-1 border-blue-200">
+                          XL,
+                        </span>
+                    }
+                      {products[item].size.includes("XXL") && 
+                        <span className="border px-1 mx-1 border-blue-200">
+                          XXL,
+                        </span>
+                      }
+                    </div>
+                    <div className="mt-1">
+                      {products[item].color.includes('Brown') && <button className="border-2 border-blue-400 ml-1 rounded-full w-6 h-6 focus:outline-none"></button>}
+                      {products[item].color.includes('Brown') && <button className="border-2 border-blue-400 ml-1 bg-blue-700 rounded-full w-6 h-6 focus:outline-none"></button>}
+                      {products[item].color.includes('Brown') && <button className="border-2 border-blue-400 ml-1 bg-blue-700 rounded-full w-6 h-6 focus:outline-none"></button>}
+                      {products[item].color.includes('Brown') && <button className="border-2 border-blue-400 ml-1 bg-blue-700 rounded-full w-6 h-6 focus:outline-none"></button>}
                     </div>
                   </div>
                 </div>

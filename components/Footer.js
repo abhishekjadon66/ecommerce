@@ -15,9 +15,7 @@ const Footer = () => {
             </Link>
 
             <p className="mt-2 text-sm text-gray-500">
-              Wear the <code />
-              Premium coding tshirts, hoodies and apparals
-            </p>
+            Ecommerce the &lt;code/&gt; - Premium Coding tshirts, hoodies, and apparals     </p>
           </div>
           <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
             <div className="lg:w-1/4 md:w-1/2 w-full px-4">
@@ -26,21 +24,21 @@ const Footer = () => {
               </h2>
               <nav className="list-none mb-10">
                 <li>
-                  <a className="text-gray-600 hover:text-gray-800">T-Shirts</a>
+                  <Link href={'/tshirts'} className="text-gray-600 hover:text-gray-800">T-Shirts</Link>
                 </li>
                 <li>
-                  <a className="text-gray-600 hover:text-gray-800">
-                    Sweatshirts
-                  </a>
+                  <Link href={"/hoodies"} className="text-gray-600 hover:text-gray-800">
+                  Hoodies
+                  </Link>
                 </li>
                 <li>
-                  <a className="text-gray-600 hover:text-gray-800">Hoodies</a>
+                  <Link href={'/mug'} className="text-gray-600 hover:text-gray-800">Mug</Link>
                 </li>
                 <li>
-                  <a className="text-gray-600 hover:text-gray-800">Zippper</a>
+                  <Link href={"/stickers"} className="text-gray-600 hover:text-gray-800">Stickers</Link>
                 </li>
                 <li>
-                  <a className="text-gray-600 hover:text-gray-800">Hoodies</a>
+                  <Link href={'/shoes'} className="text-gray-600 hover:text-gray-800">Hoodies</Link>
                 </li>
               </nav>
             </div>
