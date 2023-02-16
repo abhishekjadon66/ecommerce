@@ -11,7 +11,7 @@ const Post = ({ buyNow, addToCart, product, variants }) => {
   const [service, setService] = useState();
 
   const checkService = async () => {
-    let pins = await fetch("http://localhost:3000/api/pincode");
+    let pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
     let pinjson = await pins.json();
     if (pinjson.includes(parseInt(pin))) {
       toast.success("Your pincode is serviceable", {
@@ -47,7 +47,7 @@ const Post = ({ buyNow, addToCart, product, variants }) => {
   const [size, setSize] = useState(product.size);
 
   const refreshvariant = (newSize, newColor) => {
-    let url = `http://localhost:3000/product/${variants[newColor][newSize]["slug"]}`;
+    let url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[newColor][newSize]["slug"]}`;
     window.Location = url;
   };
 

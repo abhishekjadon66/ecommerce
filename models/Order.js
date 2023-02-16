@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const OrderShema = new mongoose.Schema(
   {
-    userId: { type: String, required: true },
+    email: { type: String, required: true },
     products: [
       {
         productId: { type: String },
@@ -15,5 +15,4 @@ const OrderShema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-mongoose.models = {};
-export default mongoose.model("Order", OrderShema);
+export default mongoose.Order || mongoose.model("Order", OrderShema);

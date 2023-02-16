@@ -63,7 +63,7 @@ const Navbar = ({
         </ul>
       </div>
       <div className="cart items-center absolute right-0 top-3 mx-5 cursor-pointer flex">
-        <a
+        <span
           onMouseOver={() => {
             setDropdown(true);
           }}
@@ -86,7 +86,7 @@ const Navbar = ({
                 <Link href={"/myaccount"}>
                   <li className="py-1 hover:text-blue-500">MY Account</li>
                 </Link>
-                <Link href={"/order"}>
+                <Link href={"/orders"}>
                   <li className="py-1 hover:text-blue-500">Orders</li>
                 </Link>
 
@@ -100,7 +100,7 @@ const Navbar = ({
           {user.value && (
             <RiAccountCircleLine className="text-xl md:text-2xl mx-2" />
           )}
-        </a>
+        </span>
         {!user.value && (
           <Link href={"/login"}>
             <button className="bg-blue-600 px-2 py-1 rounded-md text-sm text-white mx-2">
