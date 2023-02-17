@@ -5,14 +5,21 @@ import connectDb from "../../middleware/mongoose";
 import Product from "../../models/Product";
 const handler = async (req, res) => {
   if (req.method == "POST") {
-    //Check if the cart is tamperd with -- [pending]
+    //Check if the cart is tamperd with
     let product, sumTotal = 0;
     let cart = req.body.cart;
+      if (req.body.subTotal < 0) {
+        res.status(200).json({
+          success: false,
+          error: "Cart Empty! Please build your cart and try again.",
+        });
+        return;
+      }
      for (let item in cart) {
        console.log(item)
        sumTotal += cart[item].price * cart[item]
        product = await product.findOne({ slug: item })
-       //Check if the cart items are out of stocks -- [pending]
+       //Check if the cart items are out of stocks
        if (product.availableQty < cart[item].qty) {
          res
            .status(200)
@@ -33,12 +40,26 @@ const handler = async (req, res) => {
            .json({
              success: false,
              error:
-               "The price of some items in your cart have changed. Please try again",
+               "Please Enter your 10 digit number",
            });
               return  
     }
 
-    //Check if the details are valid -- [pending]
+    //Check if the details are valid
+    if (req.body.phone.length !== 1 || !Number.isInteger(req.body.phone)) {
+      res.status(200).json({
+        success: false,
+        error: "Please enter your 10 digit phone number",
+      });
+      return;
+    }
+    if (req.body.pincode.length !== 6 || !Number.isInteger(req.body.pincode)) {
+      res.status(200).json({
+        success: false,
+        error: "Please enter your 6 digit Pincode",
+      });
+      return;
+    }
 
     // Initiate an order correcsponding  to this order id
     let order = new Order({

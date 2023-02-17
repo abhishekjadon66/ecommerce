@@ -224,7 +224,7 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
           <input
             onChange={handleChange}
             value={phone}
-            placeholder="Enter your Phone Number"
+            placeholder="Enter your 10 Digit Phone Number"
             type="phone"
             id="phone"
             name="phone"
@@ -233,7 +233,7 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
         </div>
         <div className="px-2 w-1/2">
           <label htmlFor="city" className="leading-7 text-sm text-gray-600">
-            City
+            District
           </label>
           <input
             onChange={handleChange}

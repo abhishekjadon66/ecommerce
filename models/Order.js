@@ -10,6 +10,7 @@ const OrderSchema = new mongoose.Schema(
     address: { type: String, required: true },
     ammount: { type: Number, required: true },
     status: { type: String, default: "Initiated", required: true },
+    deliveryStatus: {type: String, default: 'unshipped', required: true}
   },
   { timestamps: true }
 );
