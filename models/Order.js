@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const OrderShema = new mongoose.Schema(
+const OrderSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
     OrderId: { type: String, required: true },
@@ -13,4 +13,7 @@ const OrderShema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-export default mongoose.Order || mongoose.model("Order", OrderShema);
+
+mongoose.models = {};
+export default mongoose.model("Order", OrderSchema);
+// export default mongoose.Order || mongoose.models("Order", OrderSchema);

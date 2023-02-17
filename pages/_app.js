@@ -22,15 +22,15 @@ function MyApp({ Component, pageProps }) {
       console.error(error);
       localStorage.clear();
     }
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUser({ value: token });
+    const myuser = JSON.parse(localStorage.getItem("myuser"));
+    if (myuser) {
+      setUser({ value: myuser.token, email: myuser.email });
     }
     setKey(Math.random());
   }, [router.query]);
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("myuser");
     setUser({ value: null });
     setKey(Math.random());
     router.push("/");
@@ -58,7 +58,8 @@ function MyApp({ Component, pageProps }) {
   };
 
   const buyNow = (itemCode, qty, price, name, size, variant) => {
-    let newCart = { itemCode: { qty: 1, price, name, size, variant } };
+    let newCart = {};
+    newCart[itemCode] = { qty: 1, price, name, size, variant };
     setCart(newCart);
     saveCart(newCart);
     router.push("/checkout");

@@ -14,8 +14,8 @@ const handler = async (req, res) => {
     let decryptedPass = bytes.toString(CryptoJS.enc.Utf8);
     if (user) {
       if (req.body.email == user.email && req.body.password == decryptedPass) {
-        var token = jwt.sign({ email: user.email, name: user.name }, "abhi");
-        res.status(200).json({ success: true, token });
+        var token = jwt.sign({ email: user.email, name: user.name }, "abhi" ); //JWT_secret
+        res.status(200).json({ success: true, token, email: user.email });
       } else {
         res.status(200).json({ success: false, email: "Invalid crendentials" });
       }
