@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Product from "../../models/Product";
 import mongoose from "mongoose";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,6 +9,13 @@ const Post = ({ buyNow, addToCart, product, variants }) => {
   const { slug } = router.query;
   const [pin, setPin] = useState();
   const [service, setService] = useState();
+const [color, setColor] = useState(product.color);
+const [size, setSize] = useState(product.size);
+  useEffect(() => {
+    setColor(product.color);
+    setSize(product.size)
+  }, [router.query])
+  
 
   const checkService = async () => {
     let pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
@@ -43,12 +50,11 @@ const Post = ({ buyNow, addToCart, product, variants }) => {
     setPin(e.target.value);
   };
 
-  const [color, setColor] = useState(product.color);
-  const [size, setSize] = useState(product.size);
+  
 
   const refreshvariant = (newSize, newColor) => {
     let url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[newColor][newSize]["slug"]}`;
-    window.Location = url;
+   router.push(url)
   };
 
   return (

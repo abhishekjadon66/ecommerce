@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import {
   AiOutlineShoppingCart,
@@ -20,14 +20,21 @@ const Navbar = ({
   subTotal,
 }) => {
   const [dropdown, setDropdown] = useState(false);
+  const [sidebar, setSidebar] = useState(false);
+
+  useEffect(() => {
+    Object.keys(cart).length !== 0 && setSidebar(true);
+  }, []);
+
   const toggleCart = () => {
-    if (ref.current.classList.contains("translate-x-full")) {
-      ref.current.classList.remove("translate-x-full");
-      ref.current.classList.add("translate-x-0");
-    } else if (!ref.current.classList.contains("translate-x-full")) {
-      ref.current.classList.remove("translate-x-0");
-      ref.current.classList.add("translate-x-full");
-    }
+    setSidebar(!sidebar);
+    // if (ref.current.classList.contains("translate-x-full")) {
+    //   ref.current.classList.remove("translate-x-full");
+    //   ref.current.classList.add("translate-x-0");
+    // } else if (!ref.current.classList.contains("translate-x-full")) {
+    //   ref.current.classList.remove("translate-x-0");
+    //   ref.current.classList.add("translate-x-full");
+    // }
   };
   const ref = useRef();
 
@@ -35,7 +42,7 @@ const Navbar = ({
   //   setDropdown(!dropdown);
   // };
   return (
-    <div className="flex flex-col md:flex-row md:justify-start justify-center items-center my-2 py-2 shadow-md sticky top-0 bg-white z-10">
+    <div className={`flex flex-col md:flex-row md:justify-start justify-center items-center my-2 py-2 shadow-md sticky top-0 bg-white z-10 ${!sidebar && 'overflow-hidden'}`}>
       <div className="logo mr-auto md:mx-5 cursor-pointer">
         <Link href={"/"}>
           <Image
@@ -116,8 +123,8 @@ const Navbar = ({
 
       <div
         ref={ref}
-        className={`w-72 h-[100vh] sidecart absolute top-0 right-0 bg-blue-100 px-8 py-10 transform transition-transform overflow-y-scroll  ${
-          Object.keys(cart).length != 0 ? "translate-x-0" : "translate-x-full"
+        className={`w-72 h-[100vh] sidecart absolute  top-0 bg-blue-100 px-8 py-10  transition-all overflow-y-scroll  ${
+          sidebar ? "right-0" : "-right-96"
         }`}
       >
         <h2 className="font-normal text-xl text-center">Shopping Cart</h2>
