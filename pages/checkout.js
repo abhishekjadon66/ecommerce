@@ -15,18 +15,25 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [user, setUser] = useState({valu: null})
+  const [user, setUser] = useState({ valu: null });
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('myuser'))
+    const user = JSON.parse(localStorage.getItem("myuser"));
     if (user.token) {
-      setUser(user)
-    setEmail(user.email)
-  }
-  }, [])
+      setUser(user);
+      setEmail(user.email);
+    }
+  }, []);
+
+  useEffect(() => {
+     if (name && email && phone && address && pincode) {
+       setDisabled(false);
+     } else {
+       setDisabled(true);
+     }
+  }, [name, email, phone, pincode, address])
   
 
   const handleChange = async (e) => {
-   
     if (e.target.name == "name") {
       setName(e.target.value);
     } else if (e.target.name == "email") {
@@ -37,25 +44,20 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
       setAddress(e.target.value);
     } else if (e.target.name == "pincode") {
       setPincode(e.target.value);
-       if (e.target.value.length == 6) {
-         let pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
-         let pinjson = await pins.json();
-         if (Object.keys(pinjson).includes(e.target.value)) {
-           setState(pinjson[e.target.value][1]);
-           setCity(pinjson[e.target.value][0]);
-         } else {
-           setState('')
-           setCity('')
-         }
-       } else {
-         setState("");
-         setCity("");
-       }
-    }
-    if (name && email && phone && address && pincode) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
+      if (e.target.value.length == 6) {
+        let pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
+        let pinjson = await pins.json();
+        if (Object.keys(pinjson).includes(e.target.value)) {
+          setState(pinjson[e.target.value][1]);
+          setCity(pinjson[e.target.value][0]);
+        } else {
+          setState("");
+          setCity("");
+        }
+      } else {
+        setState("");
+        setCity("");
+      }
     }
   };
 
@@ -83,7 +85,6 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
     });
     let txnRes = await a.json();
     if (txnRes.success) {
-
       let txnToken = txnRes.txnToken;
       var config = {
         root: "",
@@ -102,7 +103,7 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
           },
         },
       };
-      
+
       window.Paytm.CheckoutJS.init(config)
         .then(function onSuccess() {
           // after successfully updating configuration, invoke JS Checkout
@@ -112,8 +113,8 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
           console.log("error => ", error);
         });
     } else {
-      console.log(txnRes.error)
-      clearCart()
+      console.log(txnRes.error);
+      clearCart();
       toast(txnRes.error, {
         position: "top-right",
         autoClose: 5000,
@@ -185,8 +186,8 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
             />
           ) : (
             <input
-                value={email}
-                onChange={handleChange}
+              value={email}
+              onChange={handleChange}
               placeholder="Enter your Email"
               type="email"
               id="email"

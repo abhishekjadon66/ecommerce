@@ -26,14 +26,15 @@ const MyOrder = ({ order, clearCart }) => {
                 {/* Order Id: #{order.orderId} */}
               </h1>
               <p className="leading-relaxed mb-4">
-                Your order has been successfully placed.
-                <p>
-                  Your Payment status is:{" "}
-                  <span className="font-semibold text-slate-600-700">
-                    {/* {order.status} */}
-                  </span>
-                </p>
+                Your order has been successfully placed.{" "}
               </p>
+              <p>
+                Your Payment status is:{" "}
+                <span className="font-semibold text-slate-600-700">
+                  {/* {order.status} */}
+                </span>
+              </p>
+
               <div className="flex mb-4">
                 <a className="flex-grow text-center text-blue-500  py-2 text-lg px-1">
                   Item Description
