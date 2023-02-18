@@ -4,18 +4,21 @@ import Product from "../../models/Product";
 import mongoose from "mongoose";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Error from "next/error";
 const Post = ({ buyNow, addToCart, product, variants }) => {
   const router = useRouter();
   const { slug } = router.query;
   const [pin, setPin] = useState();
   const [service, setService] = useState();
-const [color, setColor] = useState(product.color);
-const [size, setSize] = useState(product.size);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
   useEffect(() => {
-    setColor(product.color);
-    setSize(product.size)
-  }, [router.query])
-  
+    if (!error) {
+      
+      setColor(product.color);
+      setSize(product.size);
+    }
+  }, [router.query]);
 
   const checkService = async () => {
     let pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
@@ -50,13 +53,14 @@ const [size, setSize] = useState(product.size);
     setPin(e.target.value);
   };
 
-  
-
   const refreshvariant = (newSize, newColor) => {
     let url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[newColor][newSize]["slug"]}`;
-   router.push(url)
+    router.push(url);
   };
 
+  if (error == 404) {
+    return <Error statusCode={404} />;
+  }
   return (
     <>
       <section className="text-gray-400 bg-Brown body-font overflow-hidden">
@@ -267,10 +271,18 @@ const [size, setSize] = useState(product.size);
                 </div>
               </div>
               <div className="flex">
-                <span className="title-font font-medium text-xl text-blue-500">
-                  ₹{product.price}
-                </span>
+                {product.availableQty > 0 && (
+                  <span className="title-font font-medium text-xl text-blue-500">
+                    ₹{product.price}
+                  </span>
+                )}
+                {product.availableQty <= 0 && (
+                  <span className="title-font font-medium text-xl text-blue-500">
+                    Out of stock!
+                  </span>
+                )}
                 <button
+                  disabled={product.availableQty <= 0}
                   onClick={() => {
                     addToCart(
                       slug,
@@ -281,15 +293,16 @@ const [size, setSize] = useState(product.size);
                       color
                     );
                   }}
-                  className="flex ml-8 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
+                  className="flex disabled:bg-blue-300 ml-8 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
                 >
                   Add to Cart
                 </button>
                 <button
+                  disabled={product.availableQty <= 0}
                   onClick={() => {
                     buyNow(slug, 1, product.price, product.title, size, color);
                   }}
-                  className="flex ml-3 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
+                  className="flex disabled:bg-blue-300 ml-3 text-Brown bg-blue-500 border-0 py-2 px-2 md:px-3 focus:outline-none hover:bg-blue-600 rounded"
                 >
                   Buy Now
                 </button>
@@ -339,11 +352,17 @@ const [size, setSize] = useState(product.size);
 };
 
 export async function getServerSideProps(context) {
+  let error;
   if (!mongoose.connections[0].readyState) {
     await mongoose.connect(process.env.MONGO_URI);
   }
 
   let product = await Product.findOne({ slug: context.query.slug });
+  if (prod == null) {
+    return {
+      props: { error: 404 },
+    };
+  }
   let variants = await Product.find({
     title: product.title,
     category: product.category,
@@ -360,6 +379,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      error: error,
       product: JSON.parse(JSON.stringify(product)),
       variants: JSON.parse(JSON.stringify(colorSizeSlug)),
     },

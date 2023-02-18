@@ -58,7 +58,7 @@ const Navbar = ({
           }}
           onMouseLeave={() => {
             setDropdown(false);
-          }} className='absolute right-10 top-5 z-30 cursor-pointer'
+          }} className='fixed right-10 top-5 z-30 cursor-pointer'
         >
         
       
@@ -70,7 +70,7 @@ const Navbar = ({
                   <li className="py-1 hover:text-blue-500">MY Account</li>
                 </Link>
                 <Link href={"/orders"}>
-                  <li className="py-1 hover:text-blue-500">Orders</li>
+                  <li className="py-1 hover:text-blue-500">My Orders</li>
                 </Link>
 
                 <li onClick={Logout} className="py-1 hover:text-blue-500">
