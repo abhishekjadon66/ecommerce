@@ -182,7 +182,6 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
               id="email"
               name="email"
               className="w-full bg-white rounded border border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-              readOnly
             />
           ) : (
             <input
