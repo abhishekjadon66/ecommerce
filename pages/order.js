@@ -73,7 +73,8 @@ const MyOrder = ({ order, clearCart }) => {
                       {products[key].qty}
                     </span>
                     <span className="m-auto text-gray-900">
-                      ₹{products[key].price}
+                      ₹{products[key].price} x {products[key].qty} = ₹
+                      {products[key].price}
                     </span>
                   </div>
                 );

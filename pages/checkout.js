@@ -25,13 +25,12 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
   }, []);
 
   useEffect(() => {
-     if (name && email && phone && address && pincode) {
-       setDisabled(false);
-     } else {
-       setDisabled(true);
-     }
-  }, [name, email, phone, pincode, address])
-  
+    if (name && email && phone && address && pincode) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [name, email, phone, pincode, address]);
 
   const handleChange = async (e) => {
     if (e.target.name == "name") {
@@ -113,8 +112,10 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
           console.log("error => ", error);
         });
     } else {
-      clearCart();
-      toast(txnRes.error, {
+      if (txnRes.cartClear) {
+        clearCart();
+      }
+      toast.error(txnRes.error, {
         position: "top-left",
         autoClose: 3000,
         hideProgressBar: false,

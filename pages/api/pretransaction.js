@@ -9,7 +9,7 @@ const handler = async (req, res) => {
 
    //Check if the pincode is serviceable
     if (!Object.keys(pincode).includes(req.body.pincode)) {
-      res.status(200).json({ success: false, "error": "The pincode you have enter is not serviceable" })
+      res.status(200).json({ success: false, "error": "The pincode you have enter is not serviceable", cartClear: false })
       return
       
     }
@@ -24,28 +24,27 @@ const handler = async (req, res) => {
       res.status(200).json({
         success: false,
         error: "Cart Empty! Please build your cart and try again.",
+        cartClear: false,
       });
       return;
     }
     for (let item in cart) {
-      console.log(item);
       sumTotal += cart[item].price * cart[item];
-      product = await product.findOne({ slug: item });
+      product = await Product.findOne({ slug: item });
       //Check if the cart items are out of stocks
       if (product.availableQty < cart[item].qty) {
         res.status(200).json({
           success: false,
-          error: "Some items in your cart went out of stock. Please try again",
+          error: "Some items in your cart went out of stock. Please try again", cartClear: true
         });
       }
       if (product.price != cart[item].price) {
-        res
-          .status(200)
-          .json({
-            success: false,
-            error:
-              "The price of some items in your cart have changed. Please try again",
-          });
+        res.status(200).json({
+          success: false,
+          error:
+            "The price of some items in your cart have changed. Please try again",
+          cartClear: true,
+        });
         return;
       }
     }
@@ -53,6 +52,7 @@ const handler = async (req, res) => {
       res.status(200).json({
         success: false,
         error: "Please Enter your 10 digit number",
+        cartClear: true,
       });
       return;
     }
@@ -65,6 +65,7 @@ const handler = async (req, res) => {
       res.status(200).json({
         success: false,
         error: "Please enter your 10 digit phone number",
+        cartClear: false,
       });
       return;
     }
@@ -75,6 +76,7 @@ const handler = async (req, res) => {
       res.status(200).json({
         success: false,
         error: "Please enter your 6 digit Pincode",
+        cartClear: false,
       });
       return;
     }
@@ -133,6 +135,7 @@ const handler = async (req, res) => {
           post_res.on("end", function () {
             let ress = JSON.parse(response);
             ress.success = true;
+            ress.cartClear= false;
             resolve(ress);
           });
         });
