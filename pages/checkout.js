@@ -5,7 +5,7 @@ import Head from "next/head";
 import Script from "next/script";
 import Link from "next/link";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
   const [user, setUser] = useState({ valu: null });
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("myuser"));
-    if (user.token) {
+    if (user && user.token) {
       setUser(user);
       setEmail(user.email);
     }
@@ -113,11 +113,10 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
           console.log("error => ", error);
         });
     } else {
-      console.log(txnRes.error);
       clearCart();
       toast(txnRes.error, {
-        position: "top-right",
-        autoClose: 5000,
+        position: "top-left",
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -131,7 +130,7 @@ const checkout = ({ cart, clearCart, subTotal, addToCart, removeFromCart }) => {
     <div className="container px-2 sm:m-auto">
       <ToastContainer
         position="top-left"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

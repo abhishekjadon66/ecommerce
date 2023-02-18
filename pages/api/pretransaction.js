@@ -2,58 +2,76 @@ const https = require("https");
 const PaytmChecksum = require("PaytmChecksum");
 import Order from "../../models/Order";
 import connectDb from "../../middleware/mongoose";
+import pincode from '../../pincode.json'
 import Product from "../../models/Product";
 const handler = async (req, res) => {
   if (req.method == "POST") {
+
+   //Check if the pincode is serviceable
+    if (!Object.keys(pincode).includes(req.body.pincode)) {
+      res.status(200).json({ success: false, "error": "The pincode you have enter is not serviceable" })
+      return
+      
+    }
+
+
+
     //Check if the cart is tamperd with
-    let product, sumTotal = 0;
+    let product,
+      sumTotal = 0;
     let cart = req.body.cart;
-      if (req.body.subTotal < 0) {
+    if (req.body.subTotal < 0) {
+      res.status(200).json({
+        success: false,
+        error: "Cart Empty! Please build your cart and try again.",
+      });
+      return;
+    }
+    for (let item in cart) {
+      console.log(item);
+      sumTotal += cart[item].price * cart[item];
+      product = await product.findOne({ slug: item });
+      //Check if the cart items are out of stocks
+      if (product.availableQty < cart[item].qty) {
         res.status(200).json({
           success: false,
-          error: "Cart Empty! Please build your cart and try again.",
+          error: "Some items in your cart went out of stock. Please try again",
         });
-        return;
       }
-     for (let item in cart) {
-       console.log(item)
-       sumTotal += cart[item].price * cart[item]
-       product = await product.findOne({ slug: item })
-       //Check if the cart items are out of stocks
-       if (product.availableQty < cart[item].qty) {
-         res
-           .status(200)
-           .json({
-             success: false,
-             error:
-               "Some items in your cart went out of stock. Please try again",
-           });
-       }
       if (product.price != cart[item].price) {
-        res.status(200).json({success: false, "error": "The price of some items in your cart have changed. Please try again" })
-        return
+        res
+          .status(200)
+          .json({
+            success: false,
+            error:
+              "The price of some items in your cart have changed. Please try again",
+          });
+        return;
       }
     }
     if (sumTotal !== req.body.subTotal) {
-         res
-           .status(200)
-           .json({
-             success: false,
-             error:
-               "Please Enter your 10 digit number",
-           });
-              return  
+      res.status(200).json({
+        success: false,
+        error: "Please Enter your 10 digit number",
+      });
+      return;
     }
 
     //Check if the details are valid
-    if (req.body.phone.length !== 1 || !Number.isInteger(Number(req.body.phone))) {
+    if (
+      req.body.phone.length !== 1 ||
+      !Number.isInteger(Number(req.body.phone))
+    ) {
       res.status(200).json({
         success: false,
         error: "Please enter your 10 digit phone number",
       });
       return;
     }
-    if (req.body.pincode.length !== 6 || !Number.isInteger(Number(req.body.pincode))) {
+    if (
+      req.body.pincode.length !== 6 ||
+      !Number.isInteger(Number(req.body.pincode))
+    ) {
       res.status(200).json({
         success: false,
         error: "Please enter your 6 digit Pincode",
@@ -113,8 +131,8 @@ const handler = async (req, res) => {
           });
 
           post_res.on("end", function () {
-            let ress = JSON.parse(response)
-            ress.success = true
+            let ress = JSON.parse(response);
+            ress.success = true;
             resolve(ress);
           });
         });
