@@ -11,9 +11,7 @@ import {
 } from "@mui/material";
 import BaseCard from "../baseCard/BaseCard";
 
-
-
-const AllProducts = ({products}) => {
+const AllProducts = ({ products }) => {
   return (
     <BaseCard title="All Products">
       <Table
@@ -88,7 +86,11 @@ const AllProducts = ({products}) => {
                       }}
                     ></Typography>
                   </Box>
-                  <img style={{ height: "35px", margin: "0 12px" }} src={product.img} alt="" />
+                  <img
+                    style={{ height: "35px", margin: "0 12px" }}
+                    src={product.img}
+                    alt=""
+                  />
                 </Box>
               </TableCell>
               <TableCell>
